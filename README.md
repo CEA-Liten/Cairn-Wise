@@ -33,18 +33,17 @@ The tool allows users to:
 --
 
 ### **1️⃣ Study Configuration**
-- Define **study name**, **model name**, and **file paths** (population, time-series, planetary boundaries data).
+- Define **study name**.
 
 ---
 
 ### **2️⃣ Country Selection**
-- Choose from **predefined country groups** (Western Europe, EU27, All Europe).
-- Manually select **individual countries** from a full list.
+- Manually select **individual countries**.
 ---
 
 ### **3️⃣ Select Constraints**
 - Set **transmission constraints** (GW.km) for inter-country electricity exchanges.
-- Set **demand reduction**
+- Set **demand reduction** levels for each country.
 - Chose allocation method to define the **Share of Safe Operating Space** for EU power systems. 
 
 ---
@@ -55,9 +54,12 @@ The app supports **two optimization steps**:
 - **Objective 2**: Minimize **total unmet capacity** while:
   - Respecting **PB constraints**.
   - Ensuring **unmet energy is close to the optimum* (based on Step 1 results).
+- These two objectives are optimized during the 7 `build & run`step by clicking on a single button.
 - **Outputs**:
-  - Optimal **installed capacities** (wind, solar, etc.).
-  - **Updated energy mix** with new capacities.
+  - Optimal **installed capacities** (wind, solar) for each country.
+  - **Electricity mix**
+  - Interconnections map between countries.
+  - ...
 ---
 
 ### **5️⃣ Results Visualization**
@@ -75,13 +77,13 @@ The app supports **two optimization steps**:
 - **📈 Interconnections Plots**:
   - **EU map with energy fluxes**.
   - **Bar chart** with main exchanges
-- **📈 Gini Plots**
+- **📈 Import/Export Plot**
 
 ---
 
 ### **6️⃣ Caching & Export**
 - **Save optimization results**.
-- **Retrieve cached results** for later analysis (via `st.session_state`).
+- **Retrieve cached results** in page `Saved results`.
 
 ---
 
@@ -93,34 +95,29 @@ The app supports **two optimization steps**:
 ### 2️⃣ Modify energy demand levels
 - Chose level of energy demand for each country : either demand reduction or increase. 
 
-### 3️⃣ Choose Share of Safe Operating Space (SoSOS) 
+### 3️⃣ Choose a method of allocation to define a Share of Safe Operating Space (SoSOS) 
 - Select:
   - Grandfathering
-  - EPC+GVA
-  - EPC+DLS
+  - Equal per capita (EPC) + Gross Value Added (GVA)
+  - Equal per capita (EPC) + Decent Living Standards (DLS)
 
 ### 4️⃣ Chose interconections limit  
-- Set the limit using the slider
+- Set the upper limit using the slider
 
 ### 5️⃣ Build & Run Model
-- Click Build & Run 
+- Click Build & Run
+- Solving time can be quite long depending on the solver and the constraints. 
 
 ### 6️⃣ Visualize Results
-- Click 📊 Plot Results to see:
-  - PB impact (bar chart).
-  - Installed capacities (bar chart).
-  - Electricity mix (pie charts).
-  - Sankey diagram (energy flows).
-  - Time-series plots (demand vs. supply).
-  - Interconnections map. 
-  - Import/Export bar chart. 
+- Click 📊 Plot Results.
+- See figures in the different tabs. 
 
 ### 7️⃣ Save Results
 - Enter a label (e.g., eu_test).
 - Click 💾 Save this page's results to cache.
 
 '''
-## ** DATA Source**
+## **DATA Source**
 - Time series: `data\time_series_normalized_2015.csv`
     - Consumption: consumption data was retrieved from Brinkerink, Maarten, and Paul Deane. 2020. “PLEXOS-World 2015.” Harvard Dataverse. https://doi.org/10.7910/DVN/CBYXBY and normalized. 
     - Production data: we created PV and wind time series by processing and aggregating data from Cheng-Ta Chu, Adam D. Hawkes,A geographic information system-based global variable renewable potential assessment using spatially resolved simulation, Energy, Volume 193, 2020, 116630, ISSN 0360-5442, https://doi.org/10.1016/j.energy.2019.116630.
