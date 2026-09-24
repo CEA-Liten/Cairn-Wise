@@ -17,7 +17,7 @@ The tool allows users to:
 ### Prerequisites
 - Python ≥ 3.13
 - cairnopen: download appropriate wheel 
-- Required packages (install via pip): ```pip install streamlit pandas numpy matplotlib plotly [cairnopen].whl```
+- Required packages (install via pip): ```pip install requirements.txt [cairnopen].whl```
 
 
 ## Running the App
