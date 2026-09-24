@@ -1,0 +1,4 @@
+CPLEX Parameter File Version 20.1.0.0
+CPXPARAM_LPMethod 4
+CPXPARAM_Barrier_ColNonzeros 100
+CPXPARAM_Barrier_Display 2
