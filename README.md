@@ -17,13 +17,13 @@ The tool allows users to:
 ### Prerequisites
 - Python ≥ 3.13
 - cairnopen: download appropriate wheel 
-- Required packages (install via pip): ```pip install requirements.txt [cairnopen].whl```
+- Required packages (install via pip): ```pip install -r requirements.txt```
 
 
 ## Running the App
 - Clone the repository (or download the files).
 - Place all required data files in the correct directories (see File Structure).
-- Run Streamlit: ```streamlit run app_models_interco_EU.py```
+- Run Streamlit: ```streamlit run entry.py```
 - Open the app in your browser (default: http://localhost:8501)
 
 ---
