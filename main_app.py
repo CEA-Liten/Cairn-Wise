@@ -239,7 +239,7 @@ with col2:
     solver = pb_source = st.radio(
         "Solver",
         _solver_options,
-        index=_solver_options.index(persistent_value("solver", "CPLEX")),
+        index=_solver_options.index(persistent_value("solver", "HIGHS")),
         key="solver",
     )
     save_persistent("solver")
