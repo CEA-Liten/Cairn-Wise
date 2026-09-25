@@ -16,7 +16,6 @@ The tool allows users to:
 ## 🚀 How to Run
 ### Prerequisites
 - Python ≥ 3.13
-- cairnopen: download appropriate wheel 
 - Required packages (install via pip): ```pip install -r requirements.txt```
 
 
