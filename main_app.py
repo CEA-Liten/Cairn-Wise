@@ -55,7 +55,7 @@ ALL_IMPACTS = [
     "Water use#User Deprivation Potential",
 ]
 
-WEST_EU = ['Spain', 'France', 'Germany', 'Portugal', 'United Kingdom', 'Italy', 'Austria']
+WEST_EU = ['Spain', 'France', 'Germany', 'United Kingdom', 'Italy']
 
 # Two countries pre-loaded in every base model JSON — they must not be re-added
 BASE_COUNTRIES = ["Spain", "France"]
