@@ -385,75 +385,120 @@ for country in countries_list:
 # ===========================================================================
 # ENVIRONMENTAL IMPACTS & ALLOCATION
 # ===========================================================================
-
 st.subheader("🔥 2. Lever 2: Share of Safe Operating Space", divider="green")
 
-col1, col2 = st.columns(2)
-with col1:
-    _alloc_options = ["Grandfathering", "EPC+GVA (Equal Per Capita + Gross Value Added)", "DLS (Decent Living Standards)"]
-    allocation_method = st.radio(
-        "Space of safe operating space (SoSOS) allocation method:",
-        _alloc_options,
-        index=_alloc_options.index(persistent_value("allocation_method", _alloc_options[0])),
-        key="allocation_method",
-    )
-    save_persistent("allocation_method")
-
-with col2:
-    multi_pb = st.slider(
-        "Expansion of SoSOS",
-        min_value=1, max_value=10,
-        value=persistent_value("expansion_sosos", 1), step=1,
-        key="expansion_sosos",
-    )
-    save_persistent("expansion_sosos")
-
-
-ALLOCATION_COLUMN_MAP = {
-    "Grandfathering": "SOS GF",
-    "DLS (Decent Living Standards)":            "SOS DLS",
-    "EPC+GVA (Equal Per Capita + Gross Value Added)":         "SOS EPC_GVA",
-
-}
-
-if allocation_method in ALLOCATION_COLUMN_MAP:
-    head_column_allocation = ALLOCATION_COLUMN_MAP[allocation_method]
-else:
-    st.warning('An error has occured.')
-
 pop_europe = 447315889
+
+ALLOCATION_METHODS = [
+    # (label, Excel column, image)
+    ("Grandfathering", "SOS GF", "./images/grandfathering.png"),
+    ("EPC+GVA", "SOS EPC_GVA", "./images/epcgva.png"),
+    ("DLS", "SOS DLS", "./images/dls.png"),
+]
+
+
+def compute_sos_anchors(pb_df, pop_sys, pop_eu):
+    """SoSOS share of each allocation method (% of the global carbon budget),
+    sorted from smallest to largest. """
+    if pb_df.empty or pop_sys <= 0:
+        return []
+    carrying_cap = pb_df["Carrying capacity"].iloc[0]
+    if carrying_cap == 0:
+        return []
+    anchors = [
+        {
+            "label": label, "col": col, "img": img,
+            "share": float(pb_df[col].iloc[0] * pop_sys / pop_eu / carrying_cap * 100),
+        }
+        for label, col, img in ALLOCATION_METHODS
+    ]
+    return sorted(anchors, key=lambda a: a["share"])
+
+
+def compute_system_pb(pb_df, share, horizon=20):
+    """Return a copy of pb_df with a 'system PB' column with the Sosos computed. """
+    out = pb_df.copy()
+    out["system PB"] = out["Carrying capacity"] * share / 100 * horizon
+    return out
+
+
+sosos_share = None  
+
 try:
     pb_data = load_pb_excel(pb_data_file, sheet_name_sosos)
-    pb_data['system PB'] = safe_div_series(
-        pb_data[head_column_allocation] * multi_pb * 20 * pop_system, pop_europe
-    )
-    st.session_state['PB Data'] = pb_data
 except Exception as exc:
     pb_data = pd.DataFrame()
     st.error(f"❌ Could not load Planetary Boundaries data: {exc}")
 
-# Map the UI label to the column name used in the Excel workbook
-col1, col2 = st.columns(2)
-with col1:
-    if allocation_method == 'Grandfathering':
-        st.image("./images/grandfathering.png", caption="", width=800)
-    elif allocation_method == "EPC+GVA (Equal Per Capita + Gross Value Added)":
-        st.image("./images/epcgva.png", caption="", width=800)
-    elif allocation_method == "DLS (Decent Living Standards)":
-        st.image("./images/dls.png", caption="", width=800)
-with col2:
-    if not pb_data.empty and allocation_method in (
-        'Grandfathering',
-        "EPC+GVA (Equal Per Capita + Gross Value Added)",
-        "DLS (Decent Living Standards)",
-    ):
-        carrying_capacity = pb_data['Carrying capacity'].iloc[0]
+anchors = compute_sos_anchors(pb_data, pop_system, pop_europe)
 
-        sosos_share = np.round(pb_data[head_column_allocation][0]*multi_pb*pop_system/pop_europe/pb_data['Carrying capacity'][0]*100, 2)
+if not pb_data.empty and not anchors:
+    st.warning(
+        "⚠️ SoSOS shares cannot be computed (system population or 'Carrying capacity' is 0). "
+        "Check the selected countries and the PB data."
+    )
+elif anchors:
+    # --- Slider axis: 0 -> 3x Grandfathering ---
+    gf_share = next(a["share"] for a in anchors if a["col"] == "SOS GF")
+    if gf_share <= 0:
+        st.warning("⚠️ The Grandfathering share is 0 — the slider range cannot be built.")
+    else:
+        s_min = 0.0
+        s_max = float(np.ceil(3 * gf_share * 100) / 100)
+        step = max((s_max - s_min) / 500, 0.001)
 
-        st.metric("SoSOS relative to global carbon budget (%)", np.round(sosos_share, 2))
-        if carrying_capacity == 0:
-            st.caption("⚠️ 'Carrying capacity' is 0 in the PB data — percentage shown as 0.")
+        # The range depends on the selected countries: keep a previously stored value valid
+        _stored = st.session_state.get("sosos_share")
+        if _stored is not None and not (s_min <= _stored <= s_max):
+            st.session_state["sosos_share"] = float(np.clip(_stored, s_min, s_max))
+
+        default_share = float(np.clip(
+            persistent_value("sosos_share", anchors[0]["share"]), s_min, s_max
+        ))
+        sosos_share = st.slider(
+            "Share of the global carbon budget allocated to the system (%)",
+            min_value=s_min, max_value=s_max,
+            value=default_share, step=step, format="%.3f",
+            key="sosos_share",
+        )
+        save_persistent("sosos_share")
+        # Rounded so that the model identifier is stable
+        sosos_share = round(float(sosos_share), 4)
+
+        # --- Method labels positioned at their real values under the slider ---
+        label_html = "".join(
+            f'<div style="position:absolute; left:{(a["share"] - s_min) / (s_max - s_min) * 100:.2f}%;'
+            f' transform:translateX(-50%); text-align:center; white-space:nowrap;">'
+            f'▲<br><b>{a["label"]}</b><br>{a["share"]:.2f}%</div>'
+            for a in anchors
+        )
+        st.markdown(
+            f'<div style="position:relative; height:70px; margin:-10px 0.75rem 0 0.75rem;'
+            f' font-size:0.8rem;">{label_html}</div>',
+            unsafe_allow_html=True,
+        )
+
+        # --- Per-boundary limits at the selected share ---
+        pb_data = compute_system_pb(pb_data, sosos_share)
+        st.session_state["PB Data"] = pb_data
+
+        # --- Display ---
+        nearest = min(anchors, key=lambda a: abs(a["share"] - sosos_share))
+        col_img, col_data = st.columns([3, 2], gap="large")
+        with col_img:
+            st.image(
+                nearest["img"],
+                caption=f"Closest method: {nearest['label']}",
+                use_container_width=True,
+            )
+        with col_data:
+            st.metric("SoSOS relative to global carbon budget (%)", round(sosos_share, 2))
+            for a in anchors:
+                st.caption(f"{a['label']}: {a['share']:.2f}%")
+
+if sosos_share is None:
+    st.error("❌ The SoSOS share is not available, so the model cannot be built. Fix the issue above to continue.")
+    st.stop()
 
 # ===========================================================================
 # TRANSMISSION CONSTRAINT
@@ -477,10 +522,10 @@ build_params = {
     "countries_list":        countries_list,
     "number_countries":      len(countries_list),
     "environmental_impacts": available_impacts,
-    "allocation_method":     allocation_method,
+    # "allocation_method":     'GF',
+    "sosos_share" : sosos_share, 
     "data_source":           st.session_state.get("data_source", ""),
     "transmission_constraint": transmission_constraint,
-    "expansion_sosos": st.session_state['expansion_sosos'],
 }
 
 
@@ -594,9 +639,11 @@ def build_and_run_model(base_model_file, step_type, time_series_file, pb_data_fi
 
                 pop_europe = 447315889
                 pb_data = load_pb_excel(pb_data_file, sheet_name_sosos)
-                pb_data['system PB'] = safe_div_series(
-                    pb_data[head_column_allocation] * multi_pb * 20 * pop_system, pop_europe
-                )
+                build_anchors = compute_sos_anchors(pb_data, pop_system, pop_europe)
+                if not build_anchors:
+                    st.error("❌ Cannot compute the SoSOS shares (carrying capacity or population is 0). Aborting build.")
+                    return
+                pb_data = compute_system_pb(pb_data, sosos_share)
                 # st.dataframe(pb_data)
                 st.session_state['PB Data'] = pb_data
 
