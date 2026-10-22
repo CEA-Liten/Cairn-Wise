@@ -303,7 +303,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<p class="big-font">Now your turn to play with levers!</p>', unsafe_allow_html=True)
+# st.markdown('<p class="big-font">Now your turn to play with levers!</p>', unsafe_allow_html=True)
 
 # ===========================================================================
 # DATA PREVIEW
@@ -335,8 +335,7 @@ else:
 
 st.caption(f"Valid impacts: {len(available_impacts)}")
 
-# `pop_system` is used further down (SoSOS share, model building) even if
-# nothing below manages to compute it — always give it a safe default first.
+# default value for pop
 pop_system = 0
 
 try:
@@ -438,7 +437,7 @@ if not pb_data.empty and not anchors:
         "Check the selected countries and the PB data."
     )
 elif anchors:
-    # --- Slider axis: 0 -> 3x Grandfathering ---
+    # --- Slider axis: 0 -> 3x Grandfathering : modifiable if needed --- 
     gf_share = next(a["share"] for a in anchors if a["col"] == "SOS GF")
     if gf_share <= 0:
         st.warning("⚠️ The Grandfathering share is 0 — the slider range cannot be built.")
@@ -465,7 +464,7 @@ elif anchors:
         # Rounded so that the model identifier is stable
         sosos_share = round(float(sosos_share), 4)
 
-        # --- Method labels positioned at their real values under the slider ---
+        # --- Labels positioned  under the slider ---
         label_html = "".join(
             f'<div style="position:absolute; left:{(a["share"] - s_min) / (s_max - s_min) * 100:.2f}%;'
             f' transform:translateX(-50%); text-align:center; white-space:nowrap;">'
@@ -564,11 +563,11 @@ def build_and_run_model(base_model_file, step_type, time_series_file, pb_data_fi
             cached_id = model_id
  
             st.write(f'📌 {step_type.capitalize()} Model identifier:', model_id)
-            st.text(model_found)
+            # st.text(model_found)
 
             # ---- Re-use cached model if available ----
             if model_found:
-                st.success(f"♻️ Using cached model: `{cached_id}`")
+                # st.success(f"♻️ Using cached model: `{cached_id}`")
                 existing_model_file = abs_path("models", study_name, f"{cached_id}.json")
             
                 if os.path.exists(existing_model_file):
@@ -588,7 +587,7 @@ def build_and_run_model(base_model_file, step_type, time_series_file, pb_data_fi
                         "step": step_type
                     })
                     st.success("✅ Cached model loaded successfully!")
-                    st.info(f"📋 {len(problem.get_components())} components found.")
+                    # st.info(f"📋 {len(problem.get_components())} components found.")
                     set_build_summary(
                         f"step{1 if step_type == 'energy' else 2}",
                         model_id=cached_id,
@@ -635,7 +634,7 @@ def build_and_run_model(base_model_file, step_type, time_series_file, pb_data_fi
                 if pop_system <= 0:
                     st.error("❌ Computed system population is 0 — cannot continue (check the selected countries).")
                     return
-                st.success(f"✅ System population: {pop_system:,}")
+                # st.success(f"✅ System population: {pop_system:,}")
 
                 pop_europe = 447315889
                 pb_data = load_pb_excel(pb_data_file, sheet_name_sosos)
@@ -660,7 +659,7 @@ def build_and_run_model(base_model_file, step_type, time_series_file, pb_data_fi
                     
                         add_new_country(problem, country, country_idx, mode='unmet' if step_type == 'energy' else 'old_capacity', ports = True)
                     
-                st.success(f"✅ Added countries.")
+                # st.success(f"✅ Added countries.")
 
                 # Step 6 — Transmission topology
                 status.text("🔄 Configuring transmission topology…")
@@ -819,7 +818,7 @@ def build_and_run_model(base_model_file, step_type, time_series_file, pb_data_fi
                     problem.add_timeseries(time_series_file)
 
                     # Add some debugging info
-                    st.info(f"Starting optimization for {step_type.capitalize()} model...")
+                    # st.info(f"Starting optimization for {step_type.capitalize()} model...")
 
                     # Run the optimization
                     sol = problem.run()
