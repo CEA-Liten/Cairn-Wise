@@ -366,7 +366,7 @@ except Exception as exc:
 # ===========================================================================
 
 st.subheader("📈 1. Lever 1: Energy Demand", divider="green")
-st.markdown("Adjust projected electricity demand relative to the 2015 reference year.")
+st.markdown("Adjust projected electricity demand relative to the 2015 reference year (%).")
 growth_list = {}
 
 for country in countries_list:
@@ -375,7 +375,7 @@ for country in countries_list:
         f"Demand growth/reduction {country}",
         min_value=-50, max_value=50,
         value=persistent_value(growth_key, 0), step=10,
-        help="Applied as a multiplier on each country's average load.",
+        help="% of increase or decrease of average load.",
         key=growth_key,
     )
     save_persistent(growth_key)

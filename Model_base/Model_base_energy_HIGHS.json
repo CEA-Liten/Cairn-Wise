@@ -2751,7 +2751,7 @@
 					},
 					{
 						"key": "MaxFlow",
-						"value": -1000
+						"value": -100000
 					},
 					{
 						"key": "EnvironmentModel",
@@ -3325,7 +3325,7 @@
 					},
 					{
 						"key": "MaxFlow",
-						"value": -1000
+						"value": -100000
 					},
 					{
 						"key": "EnvironmentModel",
@@ -3927,7 +3927,7 @@
 					},
 					{
 						"key": "MaxFlow",
-						"value": "1e+03"
+						"value": 100000
 					},
 					{
 						"key": "LPWeightOptimization",
@@ -4561,7 +4561,7 @@
 					},
 					{
 						"key": "MaxFlow",
-						"value": "1e+03"
+						"value": 100000
 					},
 					{
 						"key": "LPWeightOptimization",
@@ -7323,7 +7323,7 @@
 					},
 					{
 						"key": "MaxEsto",
-						"value": -1000
+						"value": -100000
 					},
 					{
 						"key": "MinEsto",
@@ -7819,7 +7819,7 @@
 					},
 					{
 						"key": "MaxEsto",
-						"value": -1000
+						"value": -100000
 					},
 					{
 						"key": "MinEsto",
