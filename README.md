@@ -64,6 +64,8 @@ The app supports **two optimization steps**:
 ### **5️⃣ Results Visualization**
 - **🌍 Planetary Boundaries Compliance**:
   - Bar chart showing **relative impacts vs. PB limits**.
+    <img width="1512" height="640" alt="image" src="https://github.com/user-attachments/assets/495cf736-9178-43f7-a60e-26d56d4fb325" />
+
 - **🏗️ Installed Capacities**:
   - Breakdown of **wind, solar, and dispatchable capacities** per country.
 - **📊 Electricity Mix**:
