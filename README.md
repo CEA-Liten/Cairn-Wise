@@ -38,12 +38,19 @@ The tool allows users to:
 
 ### **2️⃣ Country Selection**
 - Manually select **individual countries**.
+  <img width="1522" height="225" alt="image" src="https://github.com/user-attachments/assets/44d5fdea-27cc-4aef-b357-841a3cc64af6" />
+
 ---
 
 ### **3️⃣ Select Constraints**
 - Set **transmission constraints** (GW.km) for inter-country electricity exchanges.
+  <img width="1520" height="242" alt="image" src="https://github.com/user-attachments/assets/6f380da8-b637-4b71-9883-3215e96a4ba2" />
+
 - Set **demand reduction** levels for each country.
+  <img width="1489" height="273" alt="image" src="https://github.com/user-attachments/assets/83351a83-e498-40d4-97da-650bcc0ade4a" />
+
 - Chose allocation method to define the **Share of Safe Operating Space** for EU power systems. 
+  <img width="1496" height="587" alt="image" src="https://github.com/user-attachments/assets/2eb41ec9-65e7-4190-82a2-9d71b086b7ee" />
 
 ---
 
@@ -68,17 +75,29 @@ The app supports **two optimization steps**:
 
 - **🏗️ Installed Capacities**:
   - Breakdown of **wind, solar, and dispatchable capacities** per country.
+    <img width="1520" height="604" alt="image" src="https://github.com/user-attachments/assets/c462fa81-8d9f-40bc-a363-765077ffe681" />
+
 - **📊 Electricity Mix**:
   - Pie charts showing **energy sources** per country.
+    <img width="1494" height="488" alt="image" src="https://github.com/user-attachments/assets/9c44edfa-61d5-4c0f-996b-805059b67cec" />
+
 - **🌊 Energy Flow (Sankey Diagram)**:
   - Visualization of **energy exchanges** between countries.
+    <img width="1478" height="481" alt="image" src="https://github.com/user-attachments/assets/e3aaac7a-e978-4d78-afe3-7311aa927a7d" />
+
 - **📈 Time-Series Plots**:
   - **Demand vs. Supply** per country.
   - **Production stack** (wind, solar, etc.) over time.
+    <img width="1472" height="612" alt="image" src="https://github.com/user-attachments/assets/72023a99-8155-4163-b301-ce2076d8673b" />
+
 - **📈 Interconnections Plots**:
   - **EU map with energy fluxes**.
   - **Bar chart** with main exchanges
+    <img width="1502" height="700" alt="image" src="https://github.com/user-attachments/assets/5685730c-9323-4ef4-a4c6-ef2bf2edb4b9" />
+
 - **📈 Import/Export Plot**
+    <img width="1514" height="647" alt="image" src="https://github.com/user-attachments/assets/5916e7b1-a170-453e-906e-ad32a32d44b4" />
+
 
 ---
 
